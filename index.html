@@ -99,6 +99,7 @@
             </p>
             <div class="hero-actions reveal reveal-delay-4">
               <a href="#work" class="btn btn-ghost">View work</a>
+              <a href="/resume.pdf" class="btn btn-ghost" download="Sankar_Sai_Narayana_Resume.pdf">Résumé</a>
               <a href="#contact" class="btn btn-ghost">Get in touch</a>
             </div>
           </div>
@@ -145,23 +146,11 @@
 
         <div class="about-body">
         <article class="about-intro glass reveal">
-          <p class="about-intro__lead">
-            I am <strong>Yadlapalli Sankar Sai Narayana</strong>, an AI and cloud
-            software engineer based in Bangalore. I work where intelligent products
-            meet dependable infrastructure: shipping LLM-powered workflows, RAG
-            systems, and the Kubernetes and CI/CD pipelines that run them in
-            production.
-          </p>
-          <p class="about-intro__text">
-            At <strong>Yellow.ai</strong>, I operate as a DevOps Engineer Intern on
-            AWS EKS and lead on-call for production systems, while building an
-            MCP-based observability platform that routes natural-language queries to
-            the right diagnostic tools. I am a <strong>Certified Kubernetes
-            Administrator (CKA)</strong> with a B.Tech in Information Technology
-            (Honors) from JNTU-GV. I care about measurable outcomes — faster
-            incident response, safer releases, and tools engineers actually use
-            every day.
-          </p>
+           <p class="about-intro__lead">I am <strong>Yadlapalli Sankar Sai Narayana</strong>, an AI and Cloud Software Engineer focused on building reliable, production-ready AI systems. My work spans LLM applications, RAG architectures, Kubernetes platforms, observability, and cloud-native infrastructure.
+
+</p>
+
+ <p class="about-intro__text">At <strong>Yellow.ai</strong>, I work on AWS EKS production systems, lead incident response, and develop AI-powered observability tools that help engineers diagnose and resolve issues faster. As a <strong>Certified Kubernetes Administrator (CKA) </strong>with a B.Tech (Honors) in Information Technology, I am passionate about building scalable, resilient systems that deliver measurable impact.</p>
           <ul class="about-highlights" aria-label="Career highlights">
             <li class="about-highlights__item">
               <span class="about-highlights__value">1+ yr</span>
@@ -530,15 +519,15 @@
             </svg>
           </button>
 
-          <div class="work-carousel is-drifting" role="region" aria-label="Projects">
+          <div class="work-carousel" role="region" aria-label="Projects">
             <div class="work-carousel__viewport" id="work-carousel-viewport" tabindex="0">
               <div class="work-carousel__track" id="work-carousel">
                 <article class="work-card glass">
                   <div class="work-meta">
-                    <span class="pill">MCP + LLM</span>
-                    <span class="year">2025</span>
+                    <span class="pill">MCP + Platform+ LLM</span>
+                    <span class="year">2026</span>
                   </div>
-                  <h3>Intelligent observability platform</h3>
+                  <h3>TicketOps</h3>
                   <p>
                     Production agentic system at Yellow.ai: FastMCP + LangChain
                     routes queries to 11 observability tools — cutting incident
@@ -552,22 +541,35 @@
                 <article class="work-card glass">
                   <div class="work-meta">
                     <span class="pill">RAG</span>
-                    <span class="year">2024</span>
+                    <span class="year">2026</span>
                   </div>
-                  <h3>RAG knowledge assistant</h3>
+                  <h3>SE-HE-RAG</h3>
                   <p>
-                    LangChain pipeline with vector DB and Hugging Face embeddings
-                    over 10,000+ documents — ~85% answer relevance; FastAPI +
-                    Docker for sub-second retrieval.
+                    Developed a self-healing RAG pipeline with adaptive retrieval and claim verification. The system automatically retries searches and regenerates responses when evidence is insufficient, ensuring reliable and grounded answers.
                   </p>
                   <div class="work-actions">
-                    <a class="work-action work-action--live" href="https://github.com/SankarSaiNarayana/self-healing-rag" target="_blank" rel="noopener noreferrer"><span class="work-live-dot" aria-hidden="true"></span>Repository</a>
-                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana" target="_blank" rel="noopener noreferrer">Source code</a>
+                    <a class="work-action work-action--live" href="https://huggingface.co/spaces/Sankar045/Self-Healing-RAG" target="_blank" rel="noopener noreferrer"><span class="work-live-dot" aria-hidden="true"></span>Live Demo</a>
+                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana/self-healing-rag" target="_blank" rel="noopener noreferrer">Repository</a>
                   </div>
                 </article>
                 <article class="work-card glass">
                   <div class="work-meta">
-                    <span class="pill">Data / BI</span>
+                    <span class="pill">Go +Python(AI)+k8s</span>
+                    <span class="year">2026</span>
+                  </div>
+                  <h3>KubeAtlas(On-going)</h3>
+                  <p>
+                    Building KubeAtlas, an AI-powered Kubernetes operations platform that monitors cluster health, analyzes incidents, and identifies root causes in real time.
+The system combines observability, LLM-driven investigation, and automated remediation workflows to reduce troubleshooting time and improve cluster reliability.
+                  </p>
+                  <div class="work-actions">
+                    <span class="work-action work-action--note">Internal production tool</span>
+                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana/KubeAtlas" target="_blank" rel="noopener noreferrer" tabindex="-1">GitHub profile</a>
+                  </div>
+                </article>
+                <article class="work-card glass" aria-hidden="true">
+                  <div class="work-meta">
+                    <span class="pill">BI+Analysis</span>
                     <span class="year">2024</span>
                   </div>
                   <h3>Sales insights &amp; e-commerce analytics</h3>
@@ -585,34 +587,17 @@
                     <span class="pill">MCP + LLM</span>
                     <span class="year">2025</span>
                   </div>
-                  <h3>Intelligent observability platform</h3>
-                  <p>
-                    Production agentic system at Yellow.ai: FastMCP + LangChain
-                    routes queries to 11 observability tools — cutting incident
-                    investigation from ~60 minutes to under 5.
-                  </p>
-                  <div class="work-actions">
-                    <span class="work-action work-action--note">Internal production tool</span>
-                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana" target="_blank" rel="noopener noreferrer" tabindex="-1">GitHub profile</a>
-                  </div>
-                </article>
-                <article class="work-card glass" aria-hidden="true">
-                  <div class="work-meta">
-                    <span class="pill">RAG</span>
-                    <span class="year">2024</span>
-                  </div>
+                  
                   <h3>RAG knowledge assistant</h3>
                   <p>
-                    LangChain pipeline with vector DB and Hugging Face embeddings
-                    over 10,000+ documents — ~85% answer relevance; FastAPI +
-                    Docker for sub-second retrieval.
+                    Engineered a self-healing AI system that detects weak retrievals, re-fetches supporting evidence, and regenerates responses until grounding requirements are met.
                   </p>
                   <div class="work-actions">
-                    <a class="work-action work-action--live" href="https://github.com/SankarSaiNarayana/self-healing-rag" target="_blank" rel="noopener noreferrer" tabindex="-1"><span class="work-live-dot" aria-hidden="true"></span>Repository</a>
+                    <a class="work-action work-action--live" href="https://github.com/SankarSaiNarayana/Local-RAG-Retrieval-Augmented-Generation-" target="_blank" rel="noopener noreferrer" tabindex="-1"><span class="work-live-dot" aria-hidden="true"></span>Repository</a>
                     <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana" target="_blank" rel="noopener noreferrer" tabindex="-1">Source code</a>
                   </div>
                 </article>
-                <article class="work-card glass" aria-hidden="true">
+                <!-- <article class="work-card glass" aria-hidden="true">
                   <div class="work-meta">
                     <span class="pill">Data / BI</span>
                     <span class="year">2024</span>
@@ -626,7 +611,60 @@
                     <a class="work-action work-action--live" href="https://github.com/SankarSaiNarayana/DATA-ANALYSIS-SALES-INSIGHTS" target="_blank" rel="noopener noreferrer" tabindex="-1"><span class="work-live-dot" aria-hidden="true"></span>Repository</a>
                     <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana/Data-Science-eCommerce-Transactions-Dataset" target="_blank" rel="noopener noreferrer" tabindex="-1">Source code</a>
                   </div>
-                </article>
+                  
+                </article> -->
+                <!-- <article class="work-card glass">
+  <div class="work-meta">
+    <span class="pill">Kubernetes + AI</span>
+    <span class="year">2025</span>
+  </div>
+
+  <h3>AI-Powered Kubernetes Dashboard</h3>
+
+  <p>
+    Built an intelligent Kubernetes dashboard that monitors cluster health,
+    detects incidents in real time, performs AI-driven root cause analysis,
+    and suggests automated remediation actions for faster troubleshooting.
+  </p>
+
+  <div class="work-actions">
+    <a
+      class="work-action work-action--source"
+      href="https://github.com/SankarSaiNarayana"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Repository
+    </a>
+  </div>
+</article>
+<article class="work-card glass" aria-hidden="true">
+  <div class="work-meta">
+    <span class="pill">Kubernetes + AI</span>
+    <span class="year">2025</span>
+  </div>
+
+  <h3>AI-Powered Kubernetes Dashboard</h3>
+
+  <p>
+    Built an intelligent Kubernetes dashboard that monitors cluster health,
+    detects incidents in real time, performs AI-driven root cause analysis,
+    and suggests automated remediation actions for faster troubleshooting.
+  </p>
+
+  <div class="work-actions">
+    <a
+      class="work-action work-action--source"
+      href="https://github.com/SankarSaiNarayana"
+      target="_blank"
+      rel="noopener noreferrer"
+      tabindex="-1"
+    >
+      Repository
+    </a>
+  </div>
+</article> -->
+
               </div>
             </div>
           </div>
@@ -649,12 +687,6 @@
           <div class="contact-actions">
             <a class="btn btn-ghost" href="mailto:sankarsainarayana@gmail.com"
               >Email me</a
-            >
-            <a
-              class="btn btn-ghost"
-              href="/resume.pdf"
-              download="Sankar_Sai_Narayana_Resume.pdf"
-              >Résumé (PDF)</a
             >
             <a
               class="btn btn-ghost"

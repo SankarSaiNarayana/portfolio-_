@@ -29,24 +29,28 @@ applyStoredMotionPreference();
 initTheme();
 initVisitorCount();
 startPointerMotion();
-/** Work section carousel — auto-drift + prev/next controls */
+/** Work section — slow rightward auto-scroll + prev/next controls */
 function initWorkCarousel() {
   const viewport = document.getElementById('work-carousel-viewport');
   const track = document.getElementById('work-carousel');
+  const carousel = document.querySelector('.work-carousel');
   const wrapper = document.querySelector('.projects-carousel-wrapper');
   const prevBtn = document.querySelector('.carousel-btn--prev');
   const nextBtn = document.querySelector('.carousel-btn--next');
 
-  if (!viewport || !track || !prevBtn || !nextBtn) return;
+  if (!viewport || !track || !carousel || !prevBtn || !nextBtn || !wrapper) {
+    return;
+  }
 
-  const scrollBehavior = () => (prefersLessMotion() ? 'auto' : 'smooth');
-  const AUTO_SPEED = 0.45;
-  let paused = false;
+  const LOOP_DURATION_MS = 72000;
   let pauseTimer = null;
-  let rafId = null;
+  let hoverPaused = false;
+  let marqueeAnim = null;
 
-  function getScrollStep() {
-    const card = track.querySelector('.work-card:not([aria-hidden="true"])');
+  function getCardStep() {
+    const card =
+      track.querySelector('.work-card:not([aria-hidden="true"])') ??
+      track.querySelector('.work-card');
     if (!card) return 360;
     const gap = parseFloat(getComputedStyle(track).gap) || 24;
     return card.offsetWidth + gap;
@@ -56,124 +60,170 @@ function initWorkCarousel() {
     return track.scrollWidth / 2;
   }
 
-  function normalizeScroll() {
-    const loopWidth = getLoopWidth();
-    if (loopWidth <= 0) return;
-    if (viewport.scrollLeft >= loopWidth) {
-      viewport.scrollLeft -= loopWidth;
-    } else if (viewport.scrollLeft < 0) {
-      viewport.scrollLeft += loopWidth;
+  function getTrackAnimation() {
+    return marqueeAnim ?? track.getAnimations()[0] ?? null;
+  }
+
+  function stopMarquee() {
+    marqueeAnim?.cancel();
+    marqueeAnim = null;
+    track.style.transform = '';
+    carousel.classList.remove('is-auto', 'is-paused');
+  }
+
+ function startMarquee() {
+    stopMarquee();
+    carousel.classList.add('is-auto');
+    carousel.classList.remove('is-static');
+
+    // To move rightwards smoothly, we start halfway through (-50%) 
+    // and move back into the default view index layout (0%)
+    marqueeAnim = track.animate(
+      [
+        { transform: 'translateX(-50%)' },
+        { transform: 'translateX(0%)' },
+      ],
+      {
+        duration: LOOP_DURATION_MS,
+        iterations: Infinity,
+        easing: 'linear',
+      }
+    );
+
+    if (hoverPaused || pauseTimer) {
+      marqueeAnim.pause();
+      carousel.classList.add('is-paused');
     }
   }
 
-  function updateButtons() {
-    const maxScroll = viewport.scrollWidth - viewport.clientWidth;
-    const loopWidth = getLoopWidth();
-    const pos = loopWidth > 0 ? viewport.scrollLeft % loopWidth : viewport.scrollLeft;
-    prevBtn.disabled = maxScroll <= 0 || pos <= 4;
-    nextBtn.disabled = maxScroll <= 0;
+  function setStaticMode() {
+    stopMarquee();
+    carousel.classList.add('is-static');
+    viewport.scrollLeft = 0;
   }
 
-  const carousel = wrapper?.querySelector('.work-carousel');
-
-  function setDrifting(on) {
-    carousel?.classList.toggle('is-drifting', on);
+  function setPaused(on) {
+    carousel.classList.toggle('is-paused', on);
+    const anim = getTrackAnimation();
+    if (!anim) return;
+    if (on) anim.pause();
+    else anim.play();
   }
 
   function pauseAuto(ms = 0) {
-    paused = true;
-    setDrifting(false);
+    setPaused(true);
     if (pauseTimer) window.clearTimeout(pauseTimer);
     if (ms > 0) {
       pauseTimer = window.setTimeout(() => {
-        paused = false;
         pauseTimer = null;
-        if (!prefersLessMotion()) setDrifting(true);
+        if (!hoverPaused && !prefersLessMotion()) setPaused(false);
       }, ms);
     }
   }
 
-  function scrollByStep(direction) {
-    viewport.scrollBy({
-      left: direction * getScrollStep(),
-      behavior: scrollBehavior(),
-    });
-    window.setTimeout(normalizeScroll, prefersLessMotion() ? 0 : 420);
+  function resumeAuto() {
+    if (pauseTimer) window.clearTimeout(pauseTimer);
+    pauseTimer = null;
+    if (!hoverPaused && !prefersLessMotion()) setPaused(false);
   }
 
-  function autoTick() {
-    if (!prefersLessMotion() && !paused) {
-      viewport.scrollLeft += AUTO_SPEED;
-      normalizeScroll();
+  function nudge(direction) {
+    if (prefersLessMotion()) {
+      viewport.scrollBy({
+        left: direction * getCardStep(),
+        behavior: 'smooth',
+      });
       updateButtons();
+      return;
     }
-    rafId = window.requestAnimationFrame(autoTick);
+
+    const anim = getTrackAnimation();
+    const loopWidth = getLoopWidth();
+    if (!anim || loopWidth <= 0) return;
+
+    const duration =
+      typeof anim.effect?.getTiming === 'function'
+        ? anim.effect.getTiming().duration
+        : LOOP_DURATION_MS;
+        
+    // Inverted direction multiplier here because animation timeline steps backward when tracking right
+    const delta = -direction * getCardStep() * (duration / loopWidth);
+    anim.currentTime =
+      ((((anim.currentTime ?? 0) + delta) % duration) + duration) % duration;
+    pauseAuto(5000);
+  }
+  
+  function updateButtons() {
+    if (!carousel.classList.contains('is-static')) {
+      prevBtn.disabled = false;
+      nextBtn.disabled = false;
+      return;
+    }
+    const maxScroll = viewport.scrollWidth - viewport.clientWidth;
+    prevBtn.disabled = maxScroll <= 0 || viewport.scrollLeft <= 4;
+    nextBtn.disabled = maxScroll <= 0 || viewport.scrollLeft >= maxScroll - 4;
   }
 
-  prevBtn.addEventListener('click', () => {
-    scrollByStep(-1);
-    pauseAuto(5000);
-  });
-  nextBtn.addEventListener('click', () => {
-    scrollByStep(1);
-    pauseAuto(5000);
-  });
+  function applyMotionMode() {
+    if (prefersLessMotion()) {
+      setStaticMode();
+    } else {
+      startMarquee();
+      setPaused(hoverPaused || Boolean(pauseTimer));
+    }
+    updateButtons();
+  }
+
+  prevBtn.addEventListener('click', () => nudge(-1));
+  nextBtn.addEventListener('click', () => nudge(1));
+
   viewport.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') {
       e.preventDefault();
-      scrollByStep(-1);
-      pauseAuto(5000);
+      nudge(-1);
     } else if (e.key === 'ArrowRight') {
       e.preventDefault();
-      scrollByStep(1);
-      pauseAuto(5000);
+      nudge(1);
     }
   });
-  viewport.addEventListener(
-    'scroll',
-    () => {
-      normalizeScroll();
-      updateButtons();
-    },
-    { passive: true }
-  );
-  viewport.addEventListener('wheel', () => pauseAuto(4000), { passive: true });
-  viewport.addEventListener('touchstart', () => pauseAuto(), { passive: true });
-  viewport.addEventListener('touchend', () => pauseAuto(4000), { passive: true });
 
-  wrapper?.addEventListener('mouseenter', () => {
-    paused = true;
-    setDrifting(false);
+  viewport.addEventListener('scroll', updateButtons, { passive: true });
+
+  wrapper.addEventListener('mouseenter', () => {
+    hoverPaused = true;
+    setPaused(true);
   });
-  wrapper?.addEventListener('mouseleave', () => {
-    if (!pauseTimer) {
-      paused = false;
-      if (!prefersLessMotion()) setDrifting(true);
+  wrapper.addEventListener('mouseleave', () => {
+    hoverPaused = false;
+    resumeAuto();
+  });
+  wrapper.addEventListener('focusin', () => setPaused(true));
+  wrapper.addEventListener('focusout', () => pauseAuto(2500));
+
+  window.addEventListener('resize', () => {
+    if (!prefersLessMotion()) {
+      const anim = getTrackAnimation();
+      const progress =
+        anim && anim.effect?.getTiming
+          ? (anim.currentTime ?? 0) /
+            (anim.effect.getTiming().duration || LOOP_DURATION_MS)
+          : 0;
+      startMarquee();
+      const nextAnim = getTrackAnimation();
+      if (nextAnim && progress > 0) {
+        nextAnim.currentTime =
+          progress * (nextAnim.effect?.getTiming?.().duration ?? LOOP_DURATION_MS);
+      }
+      setPaused(hoverPaused || Boolean(pauseTimer));
     }
+    updateButtons();
   });
-  wrapper?.addEventListener('focusin', () => pauseAuto());
-  wrapper?.addEventListener('focusout', () => pauseAuto(2500));
-
-  window.addEventListener('resize', updateButtons);
-  updateButtons();
-
-  if (!prefersLessMotion()) {
-    setDrifting(true);
-    rafId = window.requestAnimationFrame(autoTick);
-  } else {
-    setDrifting(false);
-  }
 
   document.getElementById('reduce-motion-toggle')?.addEventListener('click', () => {
-    if (prefersLessMotion()) {
-      if (rafId) window.cancelAnimationFrame(rafId);
-      rafId = null;
-      paused = true;
-    } else if (!rafId) {
-      paused = false;
-      rafId = window.requestAnimationFrame(autoTick);
-    }
+    window.setTimeout(applyMotionMode, 0);
   });
+
+  applyMotionMode();
 }
 
 initWorkCarousel();

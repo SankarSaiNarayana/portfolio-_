@@ -665,7 +665,7 @@ main#main:focus-visible {
 }
 
 .section-lede {
-  margin: 0;
+  margin: 50;
   color: var(--text);
   font-size: 1.0625rem;
   line-height: 1.65;
@@ -695,7 +695,7 @@ main#main:focus-visible {
 
 .about-intro__lead {
   margin: 0 0 var(--space-sm);
-  max-width: 52rem;
+  max-width: 70rem;
   font-size: 1.0625rem;
   line-height: 1.7;
   color: var(--sky-deep);
@@ -704,7 +704,7 @@ main#main:focus-visible {
 
 .about-intro__text {
   margin: 0 0 var(--space-md);
-  max-width: 52rem;
+  max-width: 70rem;
   font-size: 0.96875rem;
   line-height: 1.68;
   color: var(--text);
@@ -1169,14 +1169,16 @@ main#main:focus-visible {
   animation: marquee-left 46s linear infinite;
 }
 
-.marquee--work {
+.marquee--work,
+.work-carousel {
   margin-top: var(--space-sm);
   padding: var(--space-xs) 0;
 }
 
-.marquee--work .marquee__track {
+.marquee--work .marquee__track,
+.work-carousel.is-auto .work-carousel__track {
   align-items: stretch;
-  animation: marquee-right 48s linear infinite;
+  animation: marquee-right var(--work-loop-duration, 78s) linear infinite;
 }
 
 .marquee__viewport--work {
@@ -1613,7 +1615,8 @@ main#main:focus-visible {
 
   .marquee--skills .marquee__track,
   .marquee--rtl .marquee__track,
-  .marquee--ltr .marquee__track {
+  .marquee--ltr .marquee__track,
+  .work-carousel.is-auto .work-carousel__track {
     animation: none !important;
   }
 
@@ -1694,7 +1697,8 @@ html.reduce-motion-user .hero-actions.reveal.is-visible .btn {
 
 html.reduce-motion-user .marquee--skills .marquee__track,
 html.reduce-motion-user .marquee--rtl .marquee__track,
-html.reduce-motion-user .marquee--ltr .marquee__track {
+html.reduce-motion-user .marquee--ltr .marquee__track,
+html.reduce-motion-user .work-carousel.is-auto .work-carousel__track {
   animation: none !important;
 }
 
@@ -2125,24 +2129,16 @@ html.reduce-motion-user .work-card:hover {
   z-index: 10;
 }
 
-/* Work carousel — manual scroll with prev/next controls */
+/* Work carousel — slow rightward drift (reuses marquee-right loop) */
 .work-carousel {
+  --work-loop-duration: 78s;
   flex: 1;
   min-width: 0;
-  margin-top: var(--space-sm);
-}
-
-.work-carousel.is-drifting .work-carousel__viewport {
-  scroll-snap-type: none;
 }
 
 .work-carousel__viewport {
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  overflow: hidden;
+  width: 100%;
   margin-left: calc(-1 * var(--space-md));
   margin-right: calc(-1 * var(--space-md));
   width: calc(100% + 2 * var(--space-md));
@@ -2162,10 +2158,6 @@ html.reduce-motion-user .work-card:hover {
   );
 }
 
-.work-carousel__viewport::-webkit-scrollbar {
-  display: none;
-}
-
 .work-carousel__viewport:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 3px;
@@ -2179,11 +2171,40 @@ html.reduce-motion-user .work-card:hover {
   gap: var(--space-md);
   width: max-content;
   padding: var(--space-xs) var(--space-md);
+  will-change: transform;
 }
 
-.work-carousel__track .work-card {
+.work-carousel.is-paused .work-carousel__track {
+  animation-play-state: paused;
+}
+
+/* Static fallback: scroll all projects without looping duplicate strip */
+.work-carousel.is-static .work-carousel__viewport {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.work-carousel.is-static .work-strip--dup {
+  display: none;
+}
+
+.work-carousel.is-static .work-carousel__track {
+  gap: var(--space-md);
+  padding-inline: var(--space-md);
+  animation: none !important;
+  transform: none !important;
+}
+
+.work-carousel.is-static .work-carousel__track .work-card {
   scroll-snap-align: start;
   scroll-snap-stop: always;
+}
+
+.work-carousel.is-static .work-carousel__viewport::-webkit-scrollbar {
+  display: none;
 }
 
 .carousel-btn:disabled {
