@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#000000"/>
+      <stop offset="55%" stop-color="#000a1e"/>
+      <stop offset="100%" stop-color="#001432"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="220" cy="160" r="240" fill="rgba(0,70,180,0.35)"/>
+  <circle cx="980" cy="520" r="260" fill="rgba(66,199,255,0.16)"/>
+  <rect x="80" y="80" width="1040" height="470" rx="36" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.16)" stroke-width="2"/>
+  <text x="600" y="290" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="56" font-weight="650" fill="rgba(245,250,255,0.92)">AI products · Platform · DevOps</text>
+  <text x="600" y="370" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="30" fill="rgba(245,250,255,0.70)">Portfolio — replace with your name when deploying</text>
+</svg>
