@@ -1877,6 +1877,7 @@ html.reduce-motion-user .work-card:hover {
 
   .work-carousel__viewport {
     overflow: hidden;
+   overflow-y: visible;
     width: 100%;
     margin-left: 0;
     margin-right: 0;
@@ -2223,12 +2224,13 @@ html.reduce-motion-user .work-card:hover {
 
 .work-carousel__viewport {
   overflow: visible;
+  padding-top: 60px;
+  padding-bottom: 40px;
+  overflow-y: visible;
   width: 100%;
   margin-left: calc(-1 * var(--space-md));
   margin-right: calc(-1 * var(--space-md));
   width: calc(100% + 2 * var(--space-md));
-  padding-top: var(--space-md);
-  padding-bottom: var(--space-sm);
   mask-image: linear-gradient(
     90deg,
     transparent 0%,
@@ -2305,3 +2307,21 @@ html.reduce-motion-user .work-card:hover {
 .work-card {
   transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
 }
+
+
+/* .work-carousel__track {
+  border: 3px solid red;
+}
+
+.work-carousel__viewport {
+  border: 3px solid blue;
+}
+
+.work-card {
+  border: 3px solid green;
+}
+
+.work-carousel {
+  border: 3px solid orange;
+} */
+
