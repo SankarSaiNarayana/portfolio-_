@@ -227,6 +227,25 @@ function initWorkCarousel() {
 }
 
 initWorkCarousel();
+
+/** Work card hover magnify effect with smooth lift-and-scale animation */
+function initWorkCardHover() {
+  document.querySelectorAll('.work-card').forEach((card) => {
+    card.addEventListener('mouseenter', () => {
+      // Apply transform directly
+      card.style.transform = 'translateY(-12px) scale(1.08)';
+      card.classList.add('is-hovered');
+    });
+    card.addEventListener('mouseleave', () => {
+      // Reset transform
+      card.style.transform = '';
+      card.classList.remove('is-hovered');
+    });
+  });
+}
+
+initWorkCardHover();
+
 /** In-page anchors: smooth scroll + hash (footer “reduce motion” no longer disables this). */
 document.addEventListener(
   'click',

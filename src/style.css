@@ -1301,11 +1301,15 @@ main#main:focus-visible {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--glass-panel-border);
-  transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
+  transition: all 0.35s var(--ease-out);
+  cursor: pointer;
+  will-change: transform, box-shadow;
+  transform-origin: center bottom;
 }
 
-.work-card:hover {
-  transform: translateY(-4px);
+.work-card:hover,
+.work-card.is-hovered {
+  transform: translateY(-12px) scale(1.08);
   box-shadow: var(--shadow-lift);
 }
 
@@ -1857,15 +1861,42 @@ html.reduce-motion-user .work-card:hover {
 
   .projects-carousel-wrapper {
     gap: 0.65rem;
+    position: relative;
   }
 
   .carousel-btn {
     width: 2.4rem;
     height: 2.4rem;
+    position: relative;
+  }
+
+  .work-carousel {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .work-carousel__viewport {
+    overflow: hidden;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .work-carousel__track {
+    padding: var(--space-xs) var(--space-sm);
+    gap: 0.75rem;
+  }
+
+  .work-card {
+    flex: 0 0 clamp(260px, 85vw, 320px);
+    width: clamp(260px, 85vw, 320px);
+    min-height: 240px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
   body {
     font-size: 1rem;
   }
@@ -1882,6 +1913,58 @@ html.reduce-motion-user .work-card:hover {
     font-size: 0.875rem;
     padding: 0.5rem 1rem;
     letter-spacing: 0.02em;
+  }
+
+  /* Projects carousel: hide buttons and adjust layout for small screens */
+  .projects-carousel-wrapper {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .carousel-btn {
+    width: 2rem;
+    height: 2rem;
+    position: absolute;
+  }
+
+  .carousel-btn--prev {
+    left: 0;
+  }
+
+  .carousel-btn--next {
+    right: 0;
+  }
+
+  .work-carousel {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .work-carousel__viewport {
+    margin-left: calc(-1 * var(--space-sm));
+    margin-right: calc(-1 * var(--space-sm));
+    width: calc(100% + 2 * var(--space-sm));
+  }
+
+  .work-carousel__track {
+    padding: var(--space-xs) var(--space-sm);
+    gap: 0.75rem;
+  }
+
+  .work-card {
+    flex: 0 0 clamp(240px, 90vw, 300px);
+    width: clamp(240px, 90vw, 300px);
+    min-height: 220px;
+    padding: var(--space-md);
+  }
+
+  .work-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .work-card p {
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
   }
 }
 
@@ -2134,26 +2217,30 @@ html.reduce-motion-user .work-card:hover {
   --work-loop-duration: 78s;
   flex: 1;
   min-width: 0;
+  overflow: visible;
+  position: relative;
 }
 
 .work-carousel__viewport {
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
   margin-left: calc(-1 * var(--space-md));
   margin-right: calc(-1 * var(--space-md));
   width: calc(100% + 2 * var(--space-md));
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-sm);
   mask-image: linear-gradient(
     90deg,
     transparent 0%,
-    #000 5%,
-    #000 95%,
+    #000 8%,
+    #000 92%,
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(
     90deg,
     transparent 0%,
-    #000 5%,
-    #000 95%,
+    #000 8%,
+    #000 92%,
     transparent 100%
   );
 }
