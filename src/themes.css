@@ -20,15 +20,24 @@ html {
   --glass-bg: rgba(255, 255, 255, 0.08);
   --glass-border: rgba(255, 255, 255, 0.16);
   --glass-highlight: rgba(255, 255, 255, 0.24);
-  --glass-fill: rgba(0, 16, 40, 0.42);
-  --glass-panel-fill: rgba(0, 12, 32, 0.38);
-  --glass-panel-border: rgba(255, 255, 255, 0.14);
+  /* Translucent fills — kept light so the atoms canvas shows through the blur */
+  --glass-fill: rgba(2, 18, 46, 0.3);
+  --glass-panel-fill: rgba(2, 14, 38, 0.28);
+  --glass-panel-border: rgba(255, 255, 255, 0.15);
+  /* Layered glass: lit edges, inner thickness, sheen, and no-blur fallback */
+  --glass-edge-hi: rgba(255, 255, 255, 0.55);
+  --glass-edge-mid: rgba(255, 255, 255, 0.09);
+  --glass-edge-tint: rgba(120, 190, 255, 0.2);
+  --glass-inner-dark: rgba(0, 4, 14, 0.4);
+  --glass-sheen: rgba(185, 226, 255, 0.12);
+  --glass-sheen-hover: rgba(190, 230, 255, 0.18);
+  --glass-fallback-fill: rgba(3, 12, 30, 0.94);
   --body-glow-a: rgba(0, 70, 180, 0.38);
   --body-glow-b: rgba(66, 199, 255, 0.14);
   --ambient-a: rgba(0, 70, 180, 0.3);
   --ambient-b: rgba(0, 40, 100, 0.2);
-  --ambient-c: rgba(66, 199, 255, 0.09);
-  --ambient-d: rgba(255, 255, 255, 0.03);
+  --ambient-c: rgba(99, 102, 241, 0.1);
+  --ambient-d: rgba(66, 199, 255, 0.05);
   --spot-a: rgba(66, 199, 255, 0.16);
   --spot-b: rgba(0, 70, 180, 0.1);
   --cursor-a: rgba(66, 199, 255, 0.12);

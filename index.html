@@ -42,12 +42,38 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/src/style.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Yadlapalli Sankar Sai Narayana",
+        "jobTitle": "AI & Cloud Software Engineer",
+        "worksFor": { "@type": "Organization", "name": "Yellow.ai" },
+        "knowsAbout": [
+          "LLM applications",
+          "RAG pipelines",
+          "Kubernetes",
+          "AWS EKS",
+          "DevOps",
+          "Observability"
+        ],
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "JNTU-GV College of Engineering"
+        },
+        "sameAs": [
+          "https://www.linkedin.com/in/sankar-sai-narayana/",
+          "https://github.com/SankarSaiNarayana"
+        ]
+      }
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#top">Skip to content</a>
     <div class="ambient" aria-hidden="true">
       <div class="ambient-spot"></div>
     </div>
+    <canvas class="atoms-bg" id="atoms-bg" aria-hidden="true"></canvas>
     <div class="cursor-glow" aria-hidden="true"></div>
 
     <header class="site-header">
@@ -103,18 +129,6 @@
               <a href="#contact" class="btn btn-ghost">Get in touch</a>
             </div>
           </div>
-          <figure class="hero-media reveal reveal-delay-2">
-            <!-- Photo: add public/portrait.jpg and set src to /portrait.jpg (or .webp). -->
-            <img
-              class="hero-portrait"
-              src="/portrait.svg"
-              width="320"
-              height="320"
-              alt="Yadlapalli Sankar Sai Narayana"
-              decoding="async"
-              loading="eager"
-            />
-          </figure>
         </div>
         <div class="hero-panels">
           <div class="panel glass reveal reveal-delay-1">
@@ -524,7 +538,7 @@
               <div class="work-carousel__track" id="work-carousel">
                 <article class="work-card glass">
                   <div class="work-meta">
-                    <span class="pill">MCP + Platform+ LLM</span>
+                    <span class="pill">MCP · Platform · LLM</span>
                     <span class="year">2026</span>
                   </div>
                   <h3>TicketOps</h3>
@@ -554,22 +568,24 @@
                 </article>
                 <article class="work-card glass">
                   <div class="work-meta">
-                    <span class="pill">Go +Python(AI)+k8s</span>
+                    <span class="pill">Go · Python · K8s</span>
                     <span class="year">2026</span>
                   </div>
-                  <h3>KubeAtlas(On-going)</h3>
+                  <h3>KubeAtlas</h3>
                   <p>
-                    Building KubeAtlas, an AI-powered Kubernetes operations platform that monitors cluster health, analyzes incidents, and identifies root causes in real time.
-The system combines observability, LLM-driven investigation, and automated remediation workflows to reduce troubleshooting time and improve cluster reliability.
+                    AI-powered Kubernetes operations platform that monitors
+                    cluster health, analyzes incidents, and identifies root
+                    causes in real time — combining observability, LLM-driven
+                    investigation, and automated remediation workflows.
                   </p>
                   <div class="work-actions">
-                    <span class="work-action work-action--note">Internal production tool</span>
-                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana/KubeAtlas" target="_blank" rel="noopener noreferrer" tabindex="-1">GitHub profile</a>
+                    <span class="work-action work-action--note">In active development</span>
+                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana/KubeAtlas" target="_blank" rel="noopener noreferrer">Repository</a>
                   </div>
                 </article>
-                <article class="work-card glass" aria-hidden="true">
+                <article class="work-card glass">
                   <div class="work-meta">
-                    <span class="pill">BI+Analysis</span>
+                    <span class="pill">BI · Analytics</span>
                     <span class="year">2024</span>
                   </div>
                   <h3>Sales insights &amp; e-commerce analytics</h3>
@@ -578,93 +594,25 @@ The system combines observability, LLM-driven investigation, and automated remed
                     cleaning, modeling, and dashboards for business KPIs.
                   </p>
                   <div class="work-actions">
-                    <a class="work-action work-action--live" href="https://github.com/SankarSaiNarayana/DATA-ANALYSIS-SALES-INSIGHTS" target="_blank" rel="noopener noreferrer"><span class="work-live-dot" aria-hidden="true"></span>Repository</a>
-                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana/Data-Science-eCommerce-Transactions-Dataset" target="_blank" rel="noopener noreferrer">Source code</a>
+                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana/DATA-ANALYSIS-SALES-INSIGHTS" target="_blank" rel="noopener noreferrer">Sales insights</a>
+                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana/Data-Science-eCommerce-Transactions-Dataset" target="_blank" rel="noopener noreferrer">E-commerce analysis</a>
                   </div>
                 </article>
-                <article class="work-card glass" aria-hidden="true">
+                <article class="work-card glass">
                   <div class="work-meta">
-                    <span class="pill">MCP + LLM</span>
+                    <span class="pill">RAG · Local LLM</span>
                     <span class="year">2025</span>
                   </div>
-                  
-                  <h3>RAG knowledge assistant</h3>
+                  <h3>Local RAG knowledge assistant</h3>
                   <p>
-                    Engineered a self-healing AI system that detects weak retrievals, re-fetches supporting evidence, and regenerates responses until grounding requirements are met.
+                    Privacy-first RAG assistant that runs entirely on-device —
+                    local embeddings, vector search, and LLM inference over
+                    your own documents, with no data leaving the machine.
                   </p>
                   <div class="work-actions">
-                    <a class="work-action work-action--live" href="https://github.com/SankarSaiNarayana/Local-RAG-Retrieval-Augmented-Generation-" target="_blank" rel="noopener noreferrer" tabindex="-1"><span class="work-live-dot" aria-hidden="true"></span>Repository</a>
-                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana" target="_blank" rel="noopener noreferrer" tabindex="-1">Source code</a>
+                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana/Local-RAG-Retrieval-Augmented-Generation-" target="_blank" rel="noopener noreferrer">Repository</a>
                   </div>
                 </article>
-                <!-- <article class="work-card glass" aria-hidden="true">
-                  <div class="work-meta">
-                    <span class="pill">Data / BI</span>
-                    <span class="year">2024</span>
-                  </div>
-                  <h3>Sales insights &amp; e-commerce analytics</h3>
-                  <p>
-                    End-to-end analysis with MySQL, Power BI, and Jupyter —
-                    cleaning, modeling, and dashboards for business KPIs.
-                  </p>
-                  <div class="work-actions">
-                    <a class="work-action work-action--live" href="https://github.com/SankarSaiNarayana/DATA-ANALYSIS-SALES-INSIGHTS" target="_blank" rel="noopener noreferrer" tabindex="-1"><span class="work-live-dot" aria-hidden="true"></span>Repository</a>
-                    <a class="work-action work-action--source" href="https://github.com/SankarSaiNarayana/Data-Science-eCommerce-Transactions-Dataset" target="_blank" rel="noopener noreferrer" tabindex="-1">Source code</a>
-                  </div>
-                  
-                </article> -->
-                <!-- <article class="work-card glass">
-  <div class="work-meta">
-    <span class="pill">Kubernetes + AI</span>
-    <span class="year">2025</span>
-  </div>
-
-  <h3>AI-Powered Kubernetes Dashboard</h3>
-
-  <p>
-    Built an intelligent Kubernetes dashboard that monitors cluster health,
-    detects incidents in real time, performs AI-driven root cause analysis,
-    and suggests automated remediation actions for faster troubleshooting.
-  </p>
-
-  <div class="work-actions">
-    <a
-      class="work-action work-action--source"
-      href="https://github.com/SankarSaiNarayana"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Repository
-    </a>
-  </div>
-</article>
-<article class="work-card glass" aria-hidden="true">
-  <div class="work-meta">
-    <span class="pill">Kubernetes + AI</span>
-    <span class="year">2025</span>
-  </div>
-
-  <h3>AI-Powered Kubernetes Dashboard</h3>
-
-  <p>
-    Built an intelligent Kubernetes dashboard that monitors cluster health,
-    detects incidents in real time, performs AI-driven root cause analysis,
-    and suggests automated remediation actions for faster troubleshooting.
-  </p>
-
-  <div class="work-actions">
-    <a
-      class="work-action work-action--source"
-      href="https://github.com/SankarSaiNarayana"
-      target="_blank"
-      rel="noopener noreferrer"
-      tabindex="-1"
-    >
-      Repository
-    </a>
-  </div>
-</article> -->
-
               </div>
             </div>
           </div>
@@ -728,7 +676,7 @@ The system combines observability, LLM-driven investigation, and automated remed
           </svg>
           <span>
             <strong id="visitor-count" class="visitor-stat__count">—</strong>
-            Visited
+            visitors
           </span>
         </p>
         <div class="footer-meta">

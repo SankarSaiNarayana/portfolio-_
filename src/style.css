@@ -150,6 +150,23 @@ body.has-pointer-fx .ambient-spot {
   opacity: 1;
 }
 
+/* Connected-atoms canvas — sits above the ambient wash, below all content,
+   so glass panels blur live moving detail instead of a static gradient. */
+.atoms-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.atoms-bg.is-on {
+  opacity: 1;
+}
+
 .cursor-glow {
   position: fixed;
   width: min(520px, 90vw);
@@ -202,32 +219,119 @@ body.has-pointer-fx .cursor-glow {
   }
 }
 
+/* Layered glass system.
+   Base element: blurred, saturated fill with inner "thickness" shadows.
+   ::before — gradient ring that catches light along the edge (masked border).
+   ::after  — pointer-tracked specular sheen + fine film grain, so the
+              surface reads as glass in front of the content, not a flat tint. */
+.glass,
+.glass-panel {
+  position: relative;
+  isolation: isolate;
+}
+
 .glass {
   background: linear-gradient(
       140deg,
       rgba(255, 255, 255, 0.09),
-      rgba(255, 255, 255, 0.04)
+      rgba(255, 255, 255, 0.03) 46%,
+      rgba(120, 190, 255, 0.05)
     ),
     var(--glass-fill);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(26px) saturate(190%) brightness(1.06);
+  -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(1.06);
   border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-soft), inset 0 1px 0 var(--glass-highlight);
+  box-shadow: var(--shadow-soft),
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-inner-dark),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.08);
 }
 
 .glass-panel {
   background: linear-gradient(
       140deg,
       rgba(255, 255, 255, 0.08),
-      rgba(255, 255, 255, 0.035)
+      rgba(255, 255, 255, 0.03) 48%,
+      rgba(120, 190, 255, 0.045)
     ),
     var(--glass-panel-fill);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(170%) brightness(1.05);
+  -webkit-backdrop-filter: blur(22px) saturate(170%) brightness(1.05);
   border: 1px solid var(--glass-panel-border);
   border-radius: var(--radius-md);
   padding: var(--space-md) var(--space-lg);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-soft),
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-inner-dark);
+}
+
+/* Edge light: a 1px gradient ring hugging the border radius. Painted with a
+   mask so only the ring shows — reads as light refracting on the glass edge. */
+.glass::before,
+.glass-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    var(--glass-edge-hi) 0%,
+    var(--glass-edge-mid) 28%,
+    transparent 52%,
+    var(--glass-edge-tint) 78%,
+    var(--glass-edge-mid) 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Specular sheen (follows the pointer via --glass-mx/--glass-my from JS;
+   rests as a soft top light otherwise) + ultra-fine grain to kill banding. */
+.glass::after,
+.glass-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+      42% 52% at var(--glass-mx, 50%) var(--glass-my, -12%),
+      var(--glass-sheen) 0%,
+      transparent 72%
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.05'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: auto, 160px 160px;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.3s var(--ease-out);
+}
+
+@media (hover: hover) {
+  .glass:hover::after,
+  .glass-panel:hover::after {
+    background-image: radial-gradient(
+        46% 58% at var(--glass-mx, 50%) var(--glass-my, -12%),
+        var(--glass-sheen-hover) 0%,
+        transparent 72%
+      ),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.05'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* Browsers without backdrop-filter: use a near-opaque fill so text stays
+   readable instead of floating on raw background. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--glass-fallback-fill);
+  }
+
+  .glass-panel {
+    background: var(--glass-fallback-fill);
+  }
 }
 
 .site-header {
@@ -324,11 +428,11 @@ main {
   padding: 0 var(--space-md) var(--space-2xl);
 }
 
-main#main:focus {
+main:focus {
   outline: none;
 }
 
-main#main:focus-visible {
+main:focus-visible {
   outline: 2px solid var(--sky-deep);
   outline-offset: 6px;
   border-radius: var(--radius-md);
@@ -340,8 +444,8 @@ main#main:focus-visible {
 
 .hero-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) min(280px, 30vw);
-  gap: var(--space-lg) var(--space-xl);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-lg);
   align-items: center;
   margin-bottom: var(--space-xl);
 }
@@ -349,24 +453,6 @@ main#main:focus-visible {
 .hero-copy {
   text-align: left;
   min-width: 0;
-}
-
-.hero-media {
-  margin: 0;
-  justify-self: end;
-  align-self: center;
-}
-
-.hero-portrait {
-  display: block;
-  width: 100%;
-  max-width: 280px;
-  height: auto;
-  aspect-ratio: 1;
-  border-radius: clamp(20px, 5vw, 28px);
-  object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: var(--shadow-soft), 0 0 0 1px rgba(0, 0, 0, 0.2) inset;
 }
 
 .eyebrow {
@@ -459,7 +545,7 @@ main#main:focus-visible {
 }
 
 .hero-title {
-  font-size: clamp(1.2rem, 2.85vw, 1.65rem);
+  font-size: clamp(1.3rem, 3.2vw, 1.9rem);
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.2;
@@ -498,10 +584,10 @@ main#main:focus-visible {
 }
 
 .hero-lede {
-  font-size: clamp(0.9375rem, 1.9vw, 1.0625rem);
-  line-height: 1.55;
+  font-size: clamp(1rem, 2.1vw, 1.1875rem);
+  line-height: 1.6;
   color: var(--text);
-  max-width: 42em;
+  max-width: none;
   margin: 0 0 var(--space-md);
 }
 
@@ -566,14 +652,20 @@ main#main:focus-visible {
   background: var(--ghost-ui-bg);
   color: var(--text);
   border: 1px solid var(--ghost-ui-border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 4, 14, 0.28);
 }
 
 .btn-ghost:hover {
   background: var(--ghost-ui-hover-bg);
   border-color: var(--ghost-ui-hover-border);
   transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 4, 14, 0.28),
+    0 10px 30px rgba(0, 0, 0, 0.35),
+    0 0 24px var(--accent-glow-soft);
 }
 
 .hero-panels {
@@ -665,7 +757,7 @@ main#main:focus-visible {
 }
 
 .section-lede {
-  margin: 50;
+  margin: 0;
   color: var(--text);
   font-size: 1.0625rem;
   line-height: 1.65;
@@ -734,7 +826,7 @@ main#main:focus-visible {
   padding: var(--space-sm) var(--space-sm);
   border-radius: var(--radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 16, 40, 0.35);
+  background: rgba(0, 16, 40, 0.26);
   text-align: center;
 }
 
@@ -983,7 +1075,7 @@ main#main:focus-visible {
       color-mix(in srgb, var(--row-accent) 6%, transparent),
       rgba(255, 255, 255, 0.02)
     ),
-    rgba(0, 10, 28, 0.55);
+    rgba(0, 10, 28, 0.4);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
   transition: border-color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
 }
@@ -1175,11 +1267,13 @@ main#main:focus-visible {
   padding: var(--space-xs) 0;
 }
 
-.marquee--work .marquee__track,
-.work-carousel.is-auto .work-carousel__track {
+.marquee--work .marquee__track {
   align-items: stretch;
   animation: marquee-right var(--work-loop-duration, 78s) linear infinite;
 }
+
+/* The work carousel itself is driven by the Web Animations API in main.js
+   (pixel-accurate seamless loop); no CSS animation here to avoid competing. */
 
 .marquee__viewport--work {
   margin-left: calc(-1 * var(--space-md));
@@ -1307,10 +1401,14 @@ main#main:focus-visible {
   transform-origin: center bottom;
 }
 
-.work-card:hover,
-.work-card.is-hovered {
-  transform: translateY(-12px) scale(1.08);
-  box-shadow: var(--shadow-lift);
+@media (hover: hover) {
+  .work-card:hover {
+    transform: translateY(-10px) scale(1.045);
+    border-color: color-mix(in srgb, var(--accent-cyan) 32%, var(--glass-panel-border));
+    box-shadow: var(--shadow-lift),
+      0 0 0 1px color-mix(in srgb, var(--accent-cyan) 12%, transparent),
+      inset 0 1px 0 var(--glass-highlight);
+  }
 }
 
 .work-meta {
@@ -1655,6 +1753,11 @@ main#main:focus-visible {
     transition: none;
   }
 
+  /* The atoms canvas stays visible — JS renders it as a still frame. */
+  .atoms-bg {
+    transition: none;
+  }
+
   .scene {
     transform: none !important;
   }
@@ -1733,6 +1836,11 @@ html.reduce-motion-user .cursor-glow {
   transition: none;
 }
 
+/* The atoms canvas stays visible — JS renders it as a still frame. */
+html.reduce-motion-user .atoms-bg {
+  transition: none;
+}
+
 html.reduce-motion-user .scene {
   transform: none !important;
 }
@@ -1757,21 +1865,12 @@ html.reduce-motion-user .work-card:hover {
 /* Tablet */
 @media (max-width: 900px) {
   .hero-layout {
-    grid-template-columns: 1fr;
     gap: var(--space-md);
-  }
-
-  .hero-media {
-    order: -1;
-    justify-self: center;
-  }
-
-  .hero-portrait {
-    max-width: min(220px, 52vw);
   }
 
   .hero-copy {
     text-align: center;
+    margin-inline: auto;
   }
 
   .hero-lede {
@@ -2305,7 +2404,14 @@ html.reduce-motion-user .work-card:hover {
 }
 
 .work-card {
-  transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out);
+}
+
+/* Loop clones (added by JS for the seamless marquee) are hidden when the
+   carousel falls back to static scrolling. */
+.work-carousel.is-static .work-card--dup {
+  display: none;
 }
 
 

@@ -1,4 +1,5 @@
 import { startPointerMotion, stopPointerMotion } from './pointerMotion.js';
+import { startAtomsNetwork, stopAtomsNetwork } from './atomsNetwork.js';
 import { initTheme } from './theme.js';
 import { initVisitorCount } from './visitorCount.js';
 
@@ -29,6 +30,7 @@ applyStoredMotionPreference();
 initTheme();
 initVisitorCount();
 startPointerMotion();
+startAtomsNetwork();
 /** Work section — slow rightward auto-scroll + prev/next controls */
 function initWorkCarousel() {
   const viewport = document.getElementById('work-carousel-viewport');
@@ -42,21 +44,41 @@ function initWorkCarousel() {
     return;
   }
 
-  const LOOP_DURATION_MS = 72000;
+  // One full strip per minute — a calm but clearly visible rightward drift
+  // that starts the moment the page opens.
+  const LOOP_DURATION_MS = 58000;
   let pauseTimer = null;
   let hoverPaused = false;
   let marqueeAnim = null;
 
+  /** Seamless loop needs the card strip twice; clone it once, hidden from
+   *  screen readers and the tab order. */
+  function ensureLoopClones() {
+    if (track.querySelector('.work-card--dup')) return;
+    const cards = Array.from(track.querySelectorAll('.work-card'));
+    cards.forEach((card) => {
+      const clone = card.cloneNode(true);
+      clone.classList.add('work-card--dup');
+      clone.setAttribute('aria-hidden', 'true');
+      clone
+        .querySelectorAll('a, button, [tabindex]')
+        .forEach((el) => el.setAttribute('tabindex', '-1'));
+      track.appendChild(clone);
+    });
+  }
+
   function getCardStep() {
-    const card =
-      track.querySelector('.work-card:not([aria-hidden="true"])') ??
-      track.querySelector('.work-card');
+    const card = track.querySelector('.work-card:not(.work-card--dup)');
     if (!card) return 360;
     const gap = parseFloat(getComputedStyle(track).gap) || 24;
     return card.offsetWidth + gap;
   }
 
+  /** Exact px distance from the first card to its clone — the loop period. */
   function getLoopWidth() {
+    const first = track.querySelector('.work-card:not(.work-card--dup)');
+    const firstDup = track.querySelector('.work-card--dup');
+    if (first && firstDup) return firstDup.offsetLeft - first.offsetLeft;
     return track.scrollWidth / 2;
   }
 
@@ -73,15 +95,17 @@ function initWorkCarousel() {
 
  function startMarquee() {
     stopMarquee();
+    ensureLoopClones();
     carousel.classList.add('is-auto');
     carousel.classList.remove('is-static');
 
-    // To move rightwards smoothly, we start halfway through (-50%) 
-    // and move back into the default view index layout (0%)
+    // Rightward drift: start shifted one full strip left and settle to 0.
+    // Pixel-exact loop width keeps the wrap-around invisible.
+    const loopWidth = getLoopWidth();
     marqueeAnim = track.animate(
       [
-        { transform: 'translateX(-50%)' },
-        { transform: 'translateX(0%)' },
+        { transform: `translateX(${-loopWidth}px)` },
+        { transform: 'translateX(0px)' },
       ],
       {
         duration: LOOP_DURATION_MS,
@@ -228,23 +252,40 @@ function initWorkCarousel() {
 
 initWorkCarousel();
 
-/** Work card hover magnify effect with smooth lift-and-scale animation */
-function initWorkCardHover() {
-  document.querySelectorAll('.work-card').forEach((card) => {
-    card.addEventListener('mouseenter', () => {
-      // Apply transform directly
-      card.style.transform = 'translateY(-12px) scale(1.08)';
-      card.classList.add('is-hovered');
-    });
-    card.addEventListener('mouseleave', () => {
-      // Reset transform
-      card.style.transform = '';
-      card.classList.remove('is-hovered');
-    });
-  });
+/** Glass sheen — the specular highlight on .glass surfaces follows the
+ *  pointer (CSS reads --glass-mx/--glass-my; resting state is a top light). */
+function initGlassSheen() {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  let current = null;
+
+  const clear = () => {
+    if (!current) return;
+    current.style.removeProperty('--glass-mx');
+    current.style.removeProperty('--glass-my');
+    current = null;
+  };
+
+  document.addEventListener(
+    'pointermove',
+    (e) => {
+      if (prefersLessMotion()) return;
+      const el = e.target.closest?.('.glass, .glass-panel') ?? null;
+      if (current && current !== el) clear();
+      if (!el) return;
+      current = el;
+      const rect = el.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      el.style.setProperty('--glass-mx', `${x.toFixed(2)}%`);
+      el.style.setProperty('--glass-my', `${y.toFixed(2)}%`);
+    },
+    { passive: true }
+  );
+  document.addEventListener('pointerleave', clear);
 }
 
-initWorkCardHover();
+initGlassSheen();
 
 /** In-page anchors: smooth scroll + hash (footer “reduce motion” no longer disables this). */
 document.addEventListener(
@@ -305,6 +346,10 @@ document.addEventListener('keydown', (e) => {
 
 const reduceMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)');
 reduceMotionMq.addEventListener('change', () => {
+  // The atoms canvas stays either way — restarting it picks the right
+  // variant (drifting vs. still frame) for the new preference.
+  stopAtomsNetwork();
+  startAtomsNetwork();
   if (prefersLessMotion()) {
     stopPointerMotion();
     document.querySelectorAll('.reveal').forEach((el) => {
@@ -321,6 +366,8 @@ document.getElementById('reduce-motion-toggle')?.addEventListener('click', () =>
   if (next) localStorage.setItem(MOTION_STORAGE_KEY, '1');
   else localStorage.removeItem(MOTION_STORAGE_KEY);
   syncReduceMotionToggleUi();
+  stopAtomsNetwork();
+  startAtomsNetwork();
   if (next) {
     stopPointerMotion();
     document.querySelectorAll('.reveal').forEach((el) => {
