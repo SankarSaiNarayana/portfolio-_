@@ -2073,7 +2073,7 @@ html.reduce-motion-user .work-card:hover {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: var(--space-md);
-  align-items: stretch;
+  align-items: start;
 }
 
 .expertise-card {
